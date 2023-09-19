@@ -1,5 +1,13 @@
-# import numpy as np
+import numpy as np
+class KNN:
+    def __init__(self, K) -> None:
+        self._k = K
 
+    def _distant(self, n1, n2):
+        return ((n1 - n2)**2)**0.5
+    
+    def predict(self):
+        return self._k
 # # Sample dataset
 # X = np.array([[1, 2], [2, 3], [3, 4], [5, 6], [6, 7]])
 # y = np.array([0, 0, 1, 1, 1])
