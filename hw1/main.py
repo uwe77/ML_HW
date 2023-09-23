@@ -28,7 +28,6 @@ class KNN:
         prediction = np.bincount(k_nearest_labels).argmax()
         return prediction
 
-
 y = []
 x_input = []
 f = open('iris.txt', 'r')
@@ -39,7 +38,7 @@ for line in f.readlines():
         temp_list.append(float(s[i]))
     y.append(int(s[4]))
     x_input.append(temp_list)
-
+y = np.array(y)
 x_input = np.array(x_input)
 for i in range(4):
     for j in range(i+1, 4):
@@ -47,30 +46,27 @@ for i in range(4):
         plt.savefig(f'feature{i}_{j}.png')
         plt.clf()
 
-K1_1 = KNN(1,1)
-K2_1 = KNN(2,1)
-K3_1 = KNN(3,1)
-K4_1 = KNN(4,1)
 x_test = x_input[75:]
+y_ans = y[75:]
 x_train = x_input[:75]
 y_label = y[:75]
-cunt = 0
+
 for feature in range(1,5):
     col = list(C(range(4),feature))
+    knn = KNN(feature,1)
     for i in range(len(col)):
-        print(col[i])
-        cunt += 1
+        
+        x_train_data = x_train[:,0]
+        x_test_data = x_test[:,0]
+        score = 0
         for j in range(feature):
-            print(np.array(col[i])[j])
+            x_train_data = np.c_[x_train_data, x_train[:,col[i][j]]]
+            x_test_data = np.c_[x_test_data, x_test[:,col[i][j]]]
+        x_train_data = x_train_data[:,1:]
+        x_test_data = x_test_data[:,1:]
+        print(f'{np.array(col[i])}, data array len: {len(x_test_data[0,:])}')
+        for i in range(x_test_data.shape[0]):
+            print(x_test_data.shape)
+            print(x_train_data.shape)
+            print(f'ans: {y_ans[i]}, predict: {knn.predict(x_test_data[i,:], x_train_data, y_label)}')
 
-# for s in range(1,4):
-#     for i in range(4):
-#         for j in range(abs(i-j),4):
-#             if s < (abs(i-j) + 1):
-#                 cunt += 1
-#                 k = KNN((abs(i-j) // s)+1,1)
-#                 print(f'knn:{k}, [i:j:s]=[{i}:{j}:{s}]')
-#         for s in range(1,4):
-#             if s < abs(i-j):
-#                 for x in x_test[0, i:j:s]:  
-print(f'count = {cunt}')
