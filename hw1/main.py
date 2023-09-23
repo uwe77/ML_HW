@@ -2,6 +2,7 @@ import re
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from itertools import combinations as C
 class KNN:
     def __str__(self) -> str:
         return f'k = {self._k}, feature_num = {self._features}'
@@ -54,12 +55,22 @@ x_test = x_input[75:]
 x_train = x_input[:75]
 y_label = y[:75]
 cunt = 0
-for i in range(4):
-    for j in range(i,4):
-        for s in range(1,4):
-            if s > abs(i-j):
-                for x in x_test[0, i:j:s]:
-                    cunt += 1
-                    k = KNN((abs(i-j) // s)+1,1)
-                    print(f'knn:{k}, [i:j:s]=[{i}:{j}:{s}]')
+for feature in range(1,5):
+    col = list(C(range(4),feature))
+    for i in range(len(col)):
+        print(col[i])
+        cunt += 1
+        for j in range(feature):
+            print(np.array(col[i])[j])
+
+# for s in range(1,4):
+#     for i in range(4):
+#         for j in range(abs(i-j),4):
+#             if s < (abs(i-j) + 1):
+#                 cunt += 1
+#                 k = KNN((abs(i-j) // s)+1,1)
+#                 print(f'knn:{k}, [i:j:s]=[{i}:{j}:{s}]')
+#         for s in range(1,4):
+#             if s < abs(i-j):
+#                 for x in x_test[0, i:j:s]:  
 print(f'count = {cunt}')
