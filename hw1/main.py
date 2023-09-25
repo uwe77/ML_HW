@@ -16,16 +16,16 @@ class KNN:
         if self._features == 1:
             dis += ((n1 - n2)**2)
         else:
-            for i in range(self._features - 1):
+            for i in range(self._features):
                 dis += (n1[i] - n2[i])**2
         return dis**0.5
     
     def predict(self, x_test, x_train, y):
-        dis = 0
         distances = [self._distant(x_test, i) for i in x_train]
-        k_indices = np.argsort(distances)[:self._k]
+        k_indices = np.argsort(distances)[:self._k].ravel()
         k_nearest_labels = [y[i] for i in k_indices]
-        prediction = np.bincount(k_nearest_labels).argmax()
+        prediction = np.bincount(k_nearest_labels)
+        prediction = prediction.argmax()
         return prediction
 
 y = []
@@ -59,14 +59,16 @@ for feature in range(1,5):
         x_train_data = x_train[:,0]
         x_test_data = x_test[:,0]
         score = 0
+        print(f'=============={col[i]}================')
         for j in range(feature):
             x_train_data = np.c_[x_train_data, x_train[:,col[i][j]]]
             x_test_data = np.c_[x_test_data, x_test[:,col[i][j]]]
+
         x_train_data = x_train_data[:,1:]
         x_test_data = x_test_data[:,1:]
-        print(f'{np.array(col[i])}, data array len: {len(x_test_data[0,:])}')
+
         for i in range(x_test_data.shape[0]):
-            print(x_test_data.shape)
-            print(x_train_data.shape)
-            print(f'ans: {y_ans[i]}, predict: {knn.predict(x_test_data[i,:], x_train_data, y_label)}')
+            if knn.predict(x_test_data[i], x_train_data, y_label) == y_ans[i]:
+                score += 1
+        print(f'score:{round(score*100/75,2)}')
 
