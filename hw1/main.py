@@ -27,6 +27,30 @@ class KNN:
         prediction = np.bincount(k_nearest_labels)
         prediction = prediction.argmax()
         return prediction
+def score_list(x_test, x_train, y_label, y_ans, k_num):
+    scores = []
+    for feature in range(1,5):
+        col = list(C(range(4),feature))
+        knn = KNN(feature,k_num)
+        for i in range(len(col)):
+            
+            x_train_data = x_train[:,0]
+            x_test_data = x_test[:,0]
+            score = 0
+            # print(f'=============={col[i]}================')
+            for j in range(feature):
+                x_train_data = np.c_[x_train_data, x_train[:,col[i][j]]]
+                x_test_data = np.c_[x_test_data, x_test[:,col[i][j]]]
+
+            x_train_data = x_train_data[:,1:]
+            x_test_data = x_test_data[:,1:]
+
+            for i in range(x_test_data.shape[0]):
+                if knn.predict(x_test_data[i], x_train_data, y_label) == y_ans[i]:
+                    score += 1
+            # print(f'score:{round(score*100/75,2)}')
+            scores.append(round(score*100/75,2))
+    return scores
 
 y = []
 x_input = []
@@ -46,29 +70,32 @@ for i in range(4):
         plt.savefig(f'feature{i}_{j}.png')
         plt.clf()
 
-x_test = x_input[75:]
-y_ans = y[75:]
-x_train = x_input[:75]
-y_label = y[:75]
-
-for feature in range(1,5):
-    col = list(C(range(4),feature))
-    knn = KNN(feature,1)
-    for i in range(len(col)):
+# x_test = x_input[75:]
+# y_ans = y[75:]
+# x_train = x_input[:75]
+# y_label = y[:75]
+print(score_list(x_input[75:], x_input[:75], y[:75], y[75:], 1))
+print(score_list(x_input[:75], x_input[75:], y[75:], y[:75], 1))
+print(score_list(x_input[75:], x_input[:75], y[:75], y[75:], 3))
+print(score_list(x_input[:75], x_input[75:], y[75:], y[:75], 3))
+# for feature in range(1,5):
+#     col = list(C(range(4),feature))
+#     knn = KNN(feature,1)
+#     for i in range(len(col)):
         
-        x_train_data = x_train[:,0]
-        x_test_data = x_test[:,0]
-        score = 0
-        print(f'=============={col[i]}================')
-        for j in range(feature):
-            x_train_data = np.c_[x_train_data, x_train[:,col[i][j]]]
-            x_test_data = np.c_[x_test_data, x_test[:,col[i][j]]]
+#         x_train_data = x_train[:,0]
+#         x_test_data = x_test[:,0]
+#         score = 0
+#         print(f'=============={col[i]}================')
+#         for j in range(feature):
+#             x_train_data = np.c_[x_train_data, x_train[:,col[i][j]]]
+#             x_test_data = np.c_[x_test_data, x_test[:,col[i][j]]]
 
-        x_train_data = x_train_data[:,1:]
-        x_test_data = x_test_data[:,1:]
+#         x_train_data = x_train_data[:,1:]
+#         x_test_data = x_test_data[:,1:]
 
-        for i in range(x_test_data.shape[0]):
-            if knn.predict(x_test_data[i], x_train_data, y_label) == y_ans[i]:
-                score += 1
-        print(f'score:{round(score*100/75,2)}')
+#         for i in range(x_test_data.shape[0]):
+#             if knn.predict(x_test_data[i], x_train_data, y_label) == y_ans[i]:
+#                 score += 1
+#         print(f'score:{round(score*100/75,2)}')
 
