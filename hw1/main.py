@@ -33,7 +33,6 @@ def score_list(x_test, x_train, y_label, y_ans, k_num):
         col = list(C(range(4),feature))
         knn = KNN(feature,k_num)
         for i in range(len(col)):
-            
             x_train_data = x_train[:,0]
             x_test_data = x_test[:,0]
             score = 0
@@ -70,14 +69,23 @@ for i in range(4):
         plt.savefig(f'feature{i}_{j}.png')
         plt.clf()
 
-# x_test = x_input[75:]
-# y_ans = y[75:]
-# x_train = x_input[:75]
-# y_label = y[:75]
-print(score_list(x_input[75:], x_input[:75], y[:75], y[75:], 1))
-print(score_list(x_input[:75], x_input[75:], y[75:], y[:75], 1))
-print(score_list(x_input[75:], x_input[:75], y[:75], y[75:], 3))
-print(score_list(x_input[:75], x_input[75:], y[75:], y[:75], 3))
+s1 = np.array(score_list(x_input[75:], x_input[:75], y[:75], y[75:], 1))
+s1 += np.array(score_list(x_input[:75], x_input[75:], y[75:], y[:75], 1))
+s2 = np.array(score_list(x_input[75:], x_input[:75], y[:75], y[75:], 3))
+s2 += np.array(score_list(x_input[:75], x_input[75:], y[75:], y[:75], 3))
+s1 = [round(i/2,2) for i in s1]
+s2 = [round(i/2,2) for i in s2]
+print(f'k=1:\n{s1}\nk=3:\n{s2}')
+
+class_rate = {
+    'k=1':s1,
+    'k=3':s2
+    }
+df = pd.DataFrame(class_rate)
+
+    
+print(df)
+df.to_csv("Classification_rate.csv", sep='\t')
 # for feature in range(1,5):
 #     col = list(C(range(4),feature))
 #     knn = KNN(feature,1)
