@@ -47,7 +47,6 @@ def score_list(x_test, x_train, y_label, y_ans, k_num):
             for i in range(x_test_data.shape[0]):
                 if knn.predict(x_test_data[i], x_train_data, y_label) == y_ans[i]:
                     score += 1
-            # print(f'score:{round(score*100/75,2)}')
             scores.append(round(score*100/75,2))
     return scores
 
@@ -69,13 +68,38 @@ for i in range(4):
         plt.savefig(f'feature{i}_{j}.png')
         plt.clf()
 
-s1 = np.array(score_list(x_input[75:], x_input[:75], y[:75], y[75:], 1))
-s1 += np.array(score_list(x_input[:75], x_input[75:], y[75:], y[:75], 1))
-s2 = np.array(score_list(x_input[75:], x_input[:75], y[:75], y[75:], 3))
-s2 += np.array(score_list(x_input[:75], x_input[75:], y[75:], y[:75], 3))
+x_test = x_train = np.array
+y_label = y[:25]
+y = y[25:]
+y_ans = y[:25]
+y = y[25:]
+
+x_train = x_input[:25]
+x_input = x_input[25:]
+x_test = x_input[:25]
+x_input = x_input[25:]
+
+for i in range(2):
+    x_train = np.r_[x_train, x_input[:25]]
+    x_input = x_input[25:]
+    x_test = np.r_[x_test, x_input[:25]]
+    x_input = x_input[25:]
+
+    y_label = np.append(y_label, y[:25])
+    y = y[25:]
+    y_ans = np.append(y_ans, y[:25])
+    y = y[25:]
+
+# print(f'train{x_train.shape[0]}:\n{x_train}\ntest{x_test.shape[0]}:\n{x_test}')
+
+s1 = np.array(score_list(x_test, x_train, y_ans, y_label, 1))
+s1 += np.array(score_list(x_train, x_test, y_label, y_ans, 1))
+s2 = np.array(score_list(x_test, x_train, y_ans, y_label, 3))
+s2 += np.array(score_list(x_train, x_test, y_label, y_ans, 3))
+
 s1 = [round(i/2,2) for i in s1]
 s2 = [round(i/2,2) for i in s2]
-print(f'k=1:\n{s1}\nk=3:\n{s2}')
+# print(f'k=1:\n{s1}\nk=3:\n{s2}')
 
 class_rate = {
     'k=1':s1,
