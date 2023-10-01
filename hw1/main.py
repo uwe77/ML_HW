@@ -64,7 +64,13 @@ y = np.array(y)
 x_input = np.array(x_input)
 for i in range(4):
     for j in range(i+1, 4):
-        plt.scatter(x_input[:,i], x_input[:,j])
+        for dot in range(150):
+            if y[dot] == 1:
+                plt.scatter(x_input[dot,i], x_input[dot,j], marker= '+', color = 'r')
+            elif y[dot] == 2:
+                plt.scatter(x_input[dot,i], x_input[dot,j], marker= '*', color = 'b')
+            elif y[dot] == 3:
+                plt.scatter(x_input[dot,i], x_input[dot,j], marker= '^', color = 'g')
         plt.savefig(f'feature{i}_{j}.png')
         plt.clf()
 
