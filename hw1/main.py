@@ -48,6 +48,8 @@ def score_list(x_test, x_train, y_label, y_ans, k_num):
                 if knn.predict(x_test_data[i], x_train_data, y_label) == y_ans[i]:
                     score += 1
             scores.append(round(score*100/75,2))
+    # for i in scores:
+    #     print(scores)
     return scores
 
 y = []
@@ -71,7 +73,7 @@ for i in range(4):
                 plt.scatter(x_input[dot,i], x_input[dot,j], marker= '*', color = 'b')
             elif y[dot] == 3:
                 plt.scatter(x_input[dot,i], x_input[dot,j], marker= '^', color = 'g')
-        plt.savefig(f'feature{i}_{j}.png')
+        plt.savefig(f'feature{i+1}_{j+1}.png')
         plt.clf()
 
 x_test = x_train = np.array
@@ -116,24 +118,5 @@ df = pd.DataFrame(class_rate)
     
 print(df)
 df.to_csv("Classification_rate.csv", sep='\t')
-# for feature in range(1,5):
-#     col = list(C(range(4),feature))
-#     knn = KNN(feature,1)
-#     for i in range(len(col)):
-        
-#         x_train_data = x_train[:,0]
-#         x_test_data = x_test[:,0]
-#         score = 0
-#         print(f'=============={col[i]}================')
-#         for j in range(feature):
-#             x_train_data = np.c_[x_train_data, x_train[:,col[i][j]]]
-#             x_test_data = np.c_[x_test_data, x_test[:,col[i][j]]]
 
-#         x_train_data = x_train_data[:,1:]
-#         x_test_data = x_test_data[:,1:]
-
-#         for i in range(x_test_data.shape[0]):
-#             if knn.predict(x_test_data[i], x_train_data, y_label) == y_ans[i]:
-#                 score += 1
-#         print(f'score:{round(score*100/75,2)}')
 
