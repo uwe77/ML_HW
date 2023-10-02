@@ -14,7 +14,7 @@ class KNN:
     def _distant(self, n1, n2):
         dis = 0
         if self._features == 1:
-            dis += ((n1 - n2)**2)
+            dis += ((n1[0] - n2[0])**2)
         else:
             for i in range(self._features):
                 dis += (n1[i] - n2[i])**2
@@ -27,6 +27,7 @@ class KNN:
         prediction = np.bincount(k_nearest_labels)
         prediction = prediction.argmax()
         return prediction
+    
 def score_list(x_test, x_train, y_label, y_ans, k_num):
     scores = []
     for feature in range(1,5):
