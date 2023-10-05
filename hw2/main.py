@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from itertools import combinations as C
 class data:
-    def __init__(self, y) -> None:
+    def __init__(self, y=0) -> None:
         self._feature = []
         self._label = int(y)
 
@@ -21,24 +21,33 @@ class data:
         self._feature.append(float(x))
 
     def __str__(self) -> str:
-        return f'y:{self._label}, feature:{self._feature}'
+        return f'{self._feature},{self._label}'
 
-d1 = data(1)
-d1.append(i for i in [1,2,3,4])
-print(d1)
-print(f'd1.0:{d1[0]}')
-for i in d1[:]:
-    print(i)
+    def label(self, y = 0):
+        self._label = int(y)
 
-# y = []
-# x_input = []
-# f = open('iris.txt', 'r')
-# for line in f.readlines():
-#     s = re.split(r'\s+', line)
-#     temp_list = []
-#     for i in range(4):
-#         temp_list.append(float(s[i]))
-#     y.append(int(s[4]))
-#     x_input.append(temp_list)
-# y = np.array(y)
-# x_input = np.array(x_input)
+datas_label1 = []
+datas_label2 = []
+datas_label3 = []
+
+f = open('iris.txt', 'r')
+for line in f.readlines():
+    s = re.split(r'\s+', line)
+    data_input = data(s[4])
+    for i in range(4):
+        data_input.append(float(s[i]))
+    if len(data_input) == 1:
+        datas_label1.append(data_input)
+    elif len(data_input) == 2:
+        datas_label2.append(data_input)
+    elif len(data_input) == 3:
+        datas_label3.append(data_input)
+
+train_datas = []
+test_datas = []
+for i in range(25):
+    train_datas.append(datas_label1[i])
+    train_datas.append(datas_label2[i])
+for i in range(25,50):
+    test_datas.append(datas_label1[i])
+    test_datas.append(datas_label2[i])
