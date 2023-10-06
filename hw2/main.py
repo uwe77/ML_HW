@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from itertools import combinations as C
+import math
 class data:
     def __init__(self, y=0) -> None:
         self._feature = []
@@ -28,24 +29,44 @@ class data:
         return self
 
 class LDA:
-    def __init__(self, x_train, y_train) -> None:
-        self._num_posi = 0
-        self._num_nage = 0
-        self._m_posi = np.zeros(1, np.array(x_train).shape[1])
-        self._m_nage = np.zeros(1, np.array(x_train).shape[1])
+    def __init__(self, x_train, y_train, cin1=1, cin2=1) -> None:
+        num_posi = 0
+        num_nage = 0
+        dim1x2 = (1, int(np.array(x_train).shape[1]))
+        m_posi = np.zeros(dim1x2)
+        m_nage = np.zeros(dim1x2)
+        self._c1 = cin1
+        self._c2 = cin2
 
         for i in range(len(x_train)):
             if y_train[i]:
-                self._num_posi += 1
-                self._m_posi += np.array(x_train[i])
+                num_posi += 1
+                m_posi += np.array(x_train[i])
             else:
-                self._num_nage += 1
-                self._m_nage += np.array(x_train[i])
-        self._m_posi /= self._num_posi
-        self._m_nage /= self._num_nage
-        self._p_posi = self._num_posi / (self._num_nage+ self._num_posi)
-        self._p_nage = self._num_nage / (self._num_nage+ self._num_posi)
+                num_nage += 1
+                m_nage += np.array(x_train[i])
+        m_posi /= num_posi
+        m_nage /= num_nage
+        p_posi = num_posi / (num_nage+ num_posi)
+        p_nage = num_nage / (num_nage+ num_posi)
+        dim2x2 = (np.array(x_train).shape[1], np.array(x_train).shape[1])
+        s_posi = np.zeros(dim2x2)
+        s_nage = np.zeros(dim2x2)
+        for i in range(num_nage+num_posi):
+            if y_train[i]:
+                temp_2x1 = np.array(x_train[i]) - m_posi
+                s_posi += np.matmul(temp_2x1, np.transpose(temp_2x1))
+            else:
+                temp_2x1 = np.array(x_train[i]) - m_nage
+                s_nage += np.matmul(temp_2x1, np.transpose(temp_2x1))
+        self._segama = s_nage*p_nage+ s_posi*p_posi
+
+        self._w_t = np.matmul(np.transpose(m_posi-m_nage),np.linalg.inv(self._segama))
+        self._b = np.matmul(self._w_t, (m_posi+m_nage))/(-2) - math.log(self.c1*p_nage/(self._c2*p_posi))
+
+        print(f'self._w_t = \n{self._w_t}\nself._b = \n{self._b}')
         
+
 
 datas_label1 = []
 datas_label2 = []
@@ -72,12 +93,4 @@ for i in range(25,50):
     test_datas.append(datas_label2[i].set_label(1))
     test_datas.append(datas_label3[i].set_label(0))
 
-m1, m2 = np.zeros(2)
-for i in train_datas:
-    if len(i):
-        m1 += np.array(i[2:])
-    else:
-        m2 += np.array(i[2:])
-m1 /= (len(train_datas))/2
-m2 /= (len(train_datas))/2
-
+D = LDA([i[2:] for i in train_datas], [len(i) for i in train_datas], 1, 1)
