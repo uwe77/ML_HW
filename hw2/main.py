@@ -9,7 +9,7 @@ class data:
         self._label = int(y)
 
     def __setitem__(self, index, value)->None:
-        self._feature[index] = float(value)
+        self._feature[index] = value
 
     def __getitem__(self, index)->None:
         return self._feature[index]
@@ -23,8 +23,29 @@ class data:
     def __str__(self) -> str:
         return f'{self._feature},{self._label}'
 
-    def label(self, y = 0):
+    def set_label(self, y = 0):
         self._label = int(y)
+        return self
+
+class LDA:
+    def __init__(self, x_train, y_train) -> None:
+        self._num_posi = 0
+        self._num_nage = 0
+        self._m_posi = np.zeros(1, np.array(x_train).shape[1])
+        self._m_nage = np.zeros(1, np.array(x_train).shape[1])
+
+        for i in range(len(x_train)):
+            if y_train[i]:
+                self._num_posi += 1
+                self._m_posi += np.array(x_train[i])
+            else:
+                self._num_nage += 1
+                self._m_nage += np.array(x_train[i])
+        self._m_posi /= self._num_posi
+        self._m_nage /= self._num_nage
+        self._p_posi = self._num_posi / (self._num_nage+ self._num_posi)
+        self._p_nage = self._num_nage / (self._num_nage+ self._num_posi)
+        
 
 datas_label1 = []
 datas_label2 = []
@@ -34,8 +55,7 @@ f = open('iris.txt', 'r')
 for line in f.readlines():
     s = re.split(r'\s+', line)
     data_input = data(s[4])
-    for i in range(4):
-        data_input.append(float(s[i]))
+    data_input[:] = [float(i) for i in s[:4]]
     if len(data_input) == 1:
         datas_label1.append(data_input)
     elif len(data_input) == 2:
@@ -46,8 +66,18 @@ for line in f.readlines():
 train_datas = []
 test_datas = []
 for i in range(25):
-    train_datas.append(datas_label1[i])
-    train_datas.append(datas_label2[i])
+    train_datas.append(datas_label2[i].set_label(1))
+    train_datas.append(datas_label3[i].set_label(0))
 for i in range(25,50):
-    test_datas.append(datas_label1[i])
-    test_datas.append(datas_label2[i])
+    test_datas.append(datas_label2[i].set_label(1))
+    test_datas.append(datas_label3[i].set_label(0))
+
+m1, m2 = np.zeros(2)
+for i in train_datas:
+    if len(i):
+        m1 += np.array(i[2:])
+    else:
+        m2 += np.array(i[2:])
+m1 /= (len(train_datas))/2
+m2 /= (len(train_datas))/2
+
