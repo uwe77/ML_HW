@@ -60,11 +60,13 @@ class LDA:
                 temp_2x1 = np.array(x_train[i]) - m_nage
                 s_nage += np.matmul(temp_2x1, np.transpose(temp_2x1))
         self._segama = s_nage*p_nage+ s_posi*p_posi
+        print(np.transpose(m_posi-m_nage).shape)
+        print(self._segama)
+        # print(np.linalg.inv(self._segama).shape)
+        # self._w_t = np.matmul(np.transpose(m_posi-m_nage),np.linalg.inv(self._segama))
+        # self._b = np.matmul(self._w_t, (m_posi+m_nage))/(-2) - math.log(self.c1*p_nage/(self._c2*p_posi))
 
-        self._w_t = np.matmul(np.transpose(m_posi-m_nage),np.linalg.inv(self._segama))
-        self._b = np.matmul(self._w_t, (m_posi+m_nage))/(-2) - math.log(self.c1*p_nage/(self._c2*p_posi))
-
-        print(f'self._w_t = \n{self._w_t}\nself._b = \n{self._b}')
+        # print(f'self._w_t = \n{self._w_t}\nself._b = \n{self._b}')
         
 
 
