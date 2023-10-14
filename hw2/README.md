@@ -28,3 +28,10 @@
 
 #### step3's ROC
 <img src="./step3.png"/>
+
+### (4)多類別分類問題 
+| step  |validation|
+| :-----| :----:   |
+|step3  |96.00     |
+|step4  |96.00     |
+|step5  |96.00     |
