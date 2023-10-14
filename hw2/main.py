@@ -154,7 +154,7 @@ step2 = LDA(np.array([i[:2] for i in train_datas]), np.array([len(i) for i in tr
 print("step2:",step2)
 tpr = []
 fpr = []
-for i in np.arange(0.01,10,0.01):
+for i in np.arange(0.0001,10000,0.1):
     tp,tn,fp,fn = step2.get_tp_tn_fp_fn(np.array([i[:2] for i in test_datas]), np.array([len(i) for i in test_datas]), i)
     tpr.append(tp/(tp+fn))
     fpr.append(fp/(fp+tn))
@@ -171,7 +171,7 @@ step3 = LDA(np.array([i[2:] for i in train_datas]), np.array([len(i) for i in tr
 print("step3:",step3)
 tpr = []
 fpr = []
-for i in np.arange(0.01,10,0.01):
+for i in np.arange(0.00001,10000,0.1):
     tp,tn,fp,fn = step3.get_tp_tn_fp_fn(np.array([i[2:] for i in test_datas]), np.array([len(i) for i in test_datas]), i)
     tpr.append(tp/(tp+fn))
     fpr.append(fp/(fp+tn))
