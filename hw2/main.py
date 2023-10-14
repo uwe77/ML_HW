@@ -136,17 +136,19 @@ step1 = LDA(np.array([i[:] for i in train_datas]), np.array([len(i) for i in tra
 print("step1:" ,step1)
 tpr = []
 fpr = []
-for i in np.arange(0.01,10,0.01):
+for i in np.arange(0.000000001,1000000,10):
     tp,tn,fp,fn = step1.get_tp_tn_fp_fn(np.array([i[:] for i in test_datas]), np.array([len(i) for i in test_datas]), i)
     tpr.append(tp/(tp+fn))
     fpr.append(fp/(fp+tn))
 plt.figure(figsize=(8, 6))
 plt.plot(fpr, tpr)
+plt.plot(fpr, tpr, label=f'AUC {-round(np.trapz(tpr, fpr), 2)}')
 plt.plot([0, 1], [0, 1], 'k--')
 plt.xlim([-0.05, 1.0])
 plt.ylim([-0.05, 1.05])
 plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
+plt.legend(loc="lower right")
 plt.savefig("step1.png")
 plt.clf()
 step3 = LDA(np.array([i[2:] for i in train_datas]), np.array([len(i) for i in train_datas]))
@@ -154,34 +156,37 @@ step2 = LDA(np.array([i[:2] for i in train_datas]), np.array([len(i) for i in tr
 print("step2:",step2)
 tpr = []
 fpr = []
-for i in np.arange(0.0001,10000,0.1):
+for i in np.arange(0.01,100,0.01):
     tp,tn,fp,fn = step2.get_tp_tn_fp_fn(np.array([i[:2] for i in test_datas]), np.array([len(i) for i in test_datas]), i)
     tpr.append(tp/(tp+fn))
     fpr.append(fp/(fp+tn))
 plt.figure(figsize=(8, 6))
-plt.plot(fpr, tpr)
+plt.plot(fpr, tpr, label=f'AUC {-round(np.trapz(tpr, fpr), 2)}')
 plt.plot([0, 1], [0, 1], 'k--')
 plt.xlim([-0.05, 1.0])
 plt.ylim([-0.05, 1.05])
 plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
+plt.legend(loc="lower right")
 plt.savefig("step2.png")
 plt.clf()
 step3 = LDA(np.array([i[2:] for i in train_datas]), np.array([len(i) for i in train_datas]))
 print("step3:",step3)
 tpr = []
 fpr = []
-for i in np.arange(0.00001,10000,0.1):
+for i in np.arange(0.0000001,100000,1):
     tp,tn,fp,fn = step3.get_tp_tn_fp_fn(np.array([i[2:] for i in test_datas]), np.array([len(i) for i in test_datas]), i)
     tpr.append(tp/(tp+fn))
     fpr.append(fp/(fp+tn))
 plt.figure(figsize=(8, 6))
 plt.plot(fpr, tpr)
+plt.plot(fpr, tpr, label=f'AUC {-round(np.trapz(tpr, fpr), 2)}')
 plt.plot([0, 1], [0, 1], 'k--')
 plt.xlim([-0.05, 1.0])
 plt.ylim([-0.05, 1.05])
 plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
+plt.legend(loc="lower right")
 plt.savefig("step3.png")
 plt.clf()
 
