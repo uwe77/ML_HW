@@ -79,6 +79,12 @@ class LDA:
                     tn += 1
         return tp,tn,fp,fn
 
+    def transform(self, x):
+        pos = np.dot(x, self._w.T)+self._b
+        if pos > 0:
+            return 1
+        else:
+            return 0
 
 datas_label1 = []
 datas_label2 = []
@@ -116,6 +122,8 @@ print(f'step4: {step4}')
 print(f'step4_validation: {step4_validation}')
 print(f'step2n4`s validation {(step2_validation+step4_validation)/2}')
 
+
+print("==================(3)===================")
 train_datas = []
 test_datas = []
 for i in range(25):
@@ -124,8 +132,6 @@ for i in range(25):
 for i in range(25,50):
     test_datas.append(datas_label2[i].set_label(0))
     test_datas.append(datas_label3[i].set_label(1))
-
-print("==================(3)===================")
 step1 = LDA(np.array([i[:] for i in train_datas]), np.array([len(i) for i in train_datas]))
 print("step1:" ,step1)
 tpr = []
@@ -179,3 +185,95 @@ plt.ylabel('True Positive Rate')
 plt.savefig("step3.png")
 plt.clf()
 
+print("==================(4)===================")
+
+train_datas = []
+for i in range(25):
+    train_datas.append(datas_label1[i].set_label(1))
+    train_datas.append(datas_label2[i].set_label(0))
+LDA1 = LDA(np.array([i[2:] for i in train_datas]), np.array([len(i) for i in train_datas]))
+
+train_datas = []
+for i in range(25):
+    train_datas.append(datas_label1[i].set_label(1))
+    train_datas.append(datas_label3[i].set_label(0))
+LDA2 = LDA(np.array([i[2:] for i in train_datas]), np.array([len(i) for i in train_datas]))
+
+train_datas = []
+for i in range(25):
+    train_datas.append(datas_label2[i].set_label(1))
+    train_datas.append(datas_label3[i].set_label(0))
+LDA3 = LDA(np.array([i[2:] for i in train_datas]), np.array([len(i) for i in train_datas]))
+
+test_datas = []
+for i in range(25,50):
+    test_datas.append(datas_label1[i].set_label(1))
+    test_datas.append(datas_label2[i].set_label(2))
+    test_datas.append(datas_label3[i].set_label(3))
+step3_score = 0
+for i in test_datas:
+    vote = []
+    if LDA1.transform(i[2:]) == 1:
+        vote.append(1)
+    else:
+        vote.append(2)
+    if LDA2.transform(i[2:]) == 1:
+        vote.append(1)
+    else:
+        vote.append(3)
+    if LDA3.transform(i[2:]) == 1:
+        vote.append(2)
+    else:
+        vote.append(3)
+    predict = max(vote,key=vote.count)
+    # print(f'{len(i)}: {predict}')
+    if len(i) == predict:
+        step3_score += 1
+step3_score = step3_score*100/len(test_datas)
+print("step3_score:",step3_score)
+# ====================================================================================================
+train_datas = []
+for i in range(25, 50):
+    train_datas.append(datas_label1[i].set_label(1))
+    train_datas.append(datas_label2[i].set_label(0))
+LDA1 = LDA(np.array([i[2:] for i in train_datas]), np.array([len(i) for i in train_datas]))
+
+train_datas = []
+for i in range(25, 50):
+    train_datas.append(datas_label1[i].set_label(1))
+    train_datas.append(datas_label3[i].set_label(0))
+LDA2 = LDA(np.array([i[2:] for i in train_datas]), np.array([len(i) for i in train_datas]))
+
+train_datas = []
+for i in range(25, 50):
+    train_datas.append(datas_label2[i].set_label(1))
+    train_datas.append(datas_label3[i].set_label(0))
+LDA3 = LDA(np.array([i[2:] for i in train_datas]), np.array([len(i) for i in train_datas]))
+
+test_datas = []
+for i in range(25):
+    test_datas.append(datas_label1[i].set_label(1))
+    test_datas.append(datas_label2[i].set_label(2))
+    test_datas.append(datas_label3[i].set_label(3))
+step4_score = 0
+for i in test_datas:
+    vote = []
+    if LDA1.transform(i[2:]) == 1:
+        vote.append(1)
+    else:
+        vote.append(2)
+    if LDA2.transform(i[2:]) == 1:
+        vote.append(1)
+    else:
+        vote.append(3)
+    if LDA3.transform(i[2:]) == 1:
+        vote.append(2)
+    else:
+        vote.append(3)
+    predict = max(vote,key=vote.count)
+    # print(f'{len(i)}: {predict}')
+    if len(i) == predict:
+        step4_score += 1
+step4_score = step4_score*100/len(test_datas)
+print("step4_score:",step4_score)
+print("step34",(step3_score+step4_score)/2)
