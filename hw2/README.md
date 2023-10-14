@@ -4,7 +4,7 @@
 
 上次作業沒有把資料用class包起來，在運算時發生了很多data type對不到的問題 </b>
 所以這次就用class 包起來希望不會再有data type對不到的問題。</b>
-本次作業要用到矩陣計算但由於對numpy不熟悉所以只好自己打了一個矩陣dot，但只能用在2個feature的情況下。還好沒有使用更多的特徵了。 </b>
+這次分類率都沒有小數點感覺很怪，可是我有把ans label跟predict label都print出看，沒有發現有data type錯誤或其他奇怪的地方。
 
 ### (2)利用2-fold cross validation推估LDA在二元分類之分類率
 | step  |weight       |bias    |validation|
