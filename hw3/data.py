@@ -21,3 +21,6 @@ class data:
     def set_label(self, y = 0):
         self._label = int(y)
         return self
+
+    def __sizeof__(self) -> int:
+        return len(self._feature)
