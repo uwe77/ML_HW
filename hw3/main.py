@@ -1,42 +1,48 @@
 from data import data
 import re
 import numpy as np
-from qpsolvers import solve_qp
+from qpsolvers import solve_qp, solve_problem, Problem
+
+
+def linear_kernel(x1, x2):
+    return np.dot(x1, x2.T)
+
+def score(y_true, y_pred):
+    num = len(y_true)
+    point = np.ones((1, num))
+    return np.mean(point)
+
 
 class SVM_linear:
-    def __init__(self, C=1.0): # C is the penalty parameter of the error term
-        self.C = C # C is the penalty parameter of the error term
-        self.w = None # weights
-        self.b = None # bias
+    def __init__(self, C=1.0):
+        self.C = C
+        self.w = None
+        self.b = None
 
-    def fit(self, X, y): # X is the training data, y is the target values
-        num_samples, num_features = X.shape # num_samples is the number of samples, num_features is the number of features
-
-        # Set up the quadratic programming problem
-        P = np.zeros((num_samples + 1, num_samples + 1)) # P is the matrix of the quadratic objective function
-        P[:num_samples, :num_samples] = np.eye(num_samples) # P is the identity matrix
-        print("P=\n",P)
-        q = -np.ones(num_samples) # q is the vector of the quadratic objective function
-        # q[-1] = self.C # q is the penalty parameter of the error term
-        print("q=\n",q)
-        
-        G = -np.diag(y) @ np.hstack((X, np.ones((num_samples, 1)))) # G is the matrix of the inequality constraints
-        print("G=\n",G)
-        h = -np.zeros(num_samples) # h is the vector of the inequality constraints
-        print("h=\n",h)
-        # Solve the quadratic programming problem
-        alpha = solve_qp(P = P, q = q, G = G, h = h) # alpha is the Lagrange multipliers
-        print("alpha=\n",alpha)
-        # Calculate the weights and bias
-        self.w = X.T @ (alpha[:-1] * y) # w is the weights
+    def fit(self, X, y):
+        n_samples, n_features = X.shape
+        K = linear_kernel(X, X)
+        P = np.outer(y, y) * K
+        q = -np.ones((n_samples, 1))
+        A = y.astype(np.double)
+        b = np.array([0.0])
+        lb = np.zeros(n_samples).astype(np.double)
+        ub = np.ones(n_samples)* self.C
+        problem = Problem(P, q, None, None, A, b, lb, ub)
+        solution = solve_problem(problem, solver='proxqp')
+        alpha = np.array([round(i, 4) for i in solution.x])
+        self.w = np.array([round(i, 4) for i in np.dot(X.T, alpha * y)])
+        tmp_x = np.array(X)[np.logical_and(0 < alpha, alpha < self.C), :]
+        tmp_y = np.array(y)[np.logical_and(0 < alpha, alpha < self.C)]
+        self.b = round(np.mean(tmp_y - np.dot(tmp_x, self.w)), 4)
+        print("alpha:\n", alpha, "\nand sum: ", round(sum(alpha), 4))
         print(self.w)
-        self.b = np.mean(y - X @ self.w) # b is the bias
         print(self.b)
 
-    def predict(self, X): # X is the test data
-        linear_model = X @ self.w + self.b # linear_model is the linear model
-        return np.sign(linear_model) # return the sign of the linear model
-    
+    def predict(self, X):
+        linear_model = np.dot(X, self.w) + self.b
+        return np.sign(linear_model)
+
 
 datas1 = []
 datas2 = []
@@ -54,26 +60,16 @@ for line in f.readlines():
     elif len(data_input) == 3:
         datas3.append(data_input)
 
-# datas1 = np.array(datas1)
-# datas2 = np.array(datas2)
-# datas3 = np.array(datas3)
 
 # 将数据转换为NumPy数组
 x_test = np.vstack((np.array([i[2:] for i in datas3[25:]]), np.array([i[2:] for i in datas2[25:]])))
 x_train = np.vstack((np.array([i[2:] for i in datas3[:25]]), np.array([i[2:] for i in datas2[:25]])))
 y_train = np.hstack((np.array([-1 for i in datas3[:25]]), np.array([1 for i in datas2[:25]])))
 y_ans = np.hstack((np.array([len(i) for i in datas3[25:]]), np.array([len(i) for i in datas2[25:]])))
-X = x_train
-y = y_train
 
-# 将数据转换为特征矩阵和标签向量
 
 svm = SVM_linear()
-svm.fit(X, y)
-
-# 训练SVM模型
-
-print(svm.w, svm.b)
-
-# 输出权重和偏置
-
+svm.fit(x_train, y_train)
+svm_ans = svm.predict(x_test)
+print(svm_ans)
+print(score(y_ans, svm_ans))
