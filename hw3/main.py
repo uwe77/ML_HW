@@ -3,7 +3,7 @@ import re
 import numpy as np
 from qpsolvers import solve_qp
 
-class SVM:
+class SVM_linear:
     def __init__(self, C=1.0): # C is the penalty parameter of the error term
         self.C = C # C is the penalty parameter of the error term
         self.w = None # weights
@@ -19,18 +19,20 @@ class SVM:
         q = np.zeros(num_features + 1) # q is the vector of the quadratic objective function
         q[-1] = self.C # q is the penalty parameter of the error term
         print("q=\n",q)
+        
         G = -np.diag(y) @ np.hstack((X, np.ones((num_samples, 1)))) # G is the matrix of the inequality constraints
         print("G=\n",G)
         h = -np.ones(num_samples) # h is the vector of the inequality constraints
         print("h=\n",h)
         # Solve the quadratic programming problem
-        alpha = solve_qp(P, q, G, h) # alpha is the Lagrange multipliers
+        alpha = solve_qp(P = P, q = q, G = G, h = h) # alpha is the Lagrange multipliers
         print("alpha=\n",alpha)
         # Calculate the weights and bias
         self.w = X.T @ (alpha[:-1] * y) # w is the weights
         print(self.w)
         self.b = np.mean(y - X @ self.w) # b is the bias
         print(self.b)
+
     def predict(self, X): # X is the test data
         linear_model = X @ self.w + self.b # linear_model is the linear model
         return np.sign(linear_model) # return the sign of the linear model
@@ -66,7 +68,7 @@ y = y_train
 
 # 将数据转换为特征矩阵和标签向量
 
-svm = SVM()
+svm = SVM_linear()
 svm.fit(X, y)
 
 # 训练SVM模型
