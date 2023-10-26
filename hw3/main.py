@@ -2,7 +2,7 @@ from data import data
 import re
 import numpy as np
 from qpsolvers import solve_qp, solve_problem, Problem
-from SVM_linear import SVM_linear
+from SVM import SVM_linear
 
     
 def score(y_true, y_pred):
@@ -33,17 +33,22 @@ y_train = np.hstack((np.array([-1 for i in datas3[:25]]), np.array([1 for i in d
 y_ans = np.hstack((np.array([-1 for i in datas3[25:]]), np.array([1 for i in datas2[25:]])))
 
 
-c_rate = np.array([])
-for i in [1, 10, 100]:
-    svm = SVM_linear(C=i)
-    svm.fit(x_train, y_train)
-    svm_ans = svm.predict(x_test)
-    c_rate = np.append(c_rate, score(y_ans, svm_ans))
-    print("score_C", i, ": ", score(y_ans, svm_ans))
-    svm.fit(x_test, y_ans)
-    svm_ans = svm.predict(x_train)
-    c_rate = np.append(c_rate, score(y_ans, svm_ans))
-    print("score_C", i, ": ", score(y_ans, svm_ans))
-c_rate = np.reshape(c_rate, (3, 2))
-c_rate = np.array([round(np.mean(c_rate[i]), 2) for i in range(3)])
-print("c_rate: ", c_rate)
+# c_rate = np.array([])
+# for i in [1, 10, 100]:
+#     svm = SVM_linear(C=i)
+#     svm.fit(x_train, y_train)
+#     svm_ans = svm.predict(x_test)
+#     c_rate = np.append(c_rate, score(y_ans, svm_ans))
+#     print("score_C", i, ": ", score(y_ans, svm_ans))
+#     svm.fit(x_test, y_ans)
+#     svm_ans = svm.predict(x_train)
+#     c_rate = np.append(c_rate, score(y_ans, svm_ans))
+#     print("score_C", i, ": ", score(y_ans, svm_ans))
+# c_rate = np.reshape(c_rate, (3, 2))
+# c_rate = np.array([round(np.mean(c_rate[i]), 2) for i in range(3)])
+# print("c_rate: ", c_rate)
+
+def RBF_kernel(x1, x2, gamma=1.0):
+    return np.exp(-np.linalg.norm(x1 - x2)**2 / 2*gamma**2)
+
+print("RBF_kernel: ", RBF_kernel(np.array([1, 2]), np.array([3, 4])))
