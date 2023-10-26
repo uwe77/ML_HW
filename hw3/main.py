@@ -13,16 +13,16 @@ class SVM_linear:
         num_samples, num_features = X.shape # num_samples is the number of samples, num_features is the number of features
 
         # Set up the quadratic programming problem
-        P = np.zeros((num_features + 1, num_features + 1)) # P is the matrix of the quadratic objective function
-        P[:num_features, :num_features] = np.eye(num_features) # P is the identity matrix
+        P = np.zeros((num_samples + 1, num_samples + 1)) # P is the matrix of the quadratic objective function
+        P[:num_samples, :num_samples] = np.eye(num_samples) # P is the identity matrix
         print("P=\n",P)
-        q = np.zeros(num_features + 1) # q is the vector of the quadratic objective function
-        q[-1] = self.C # q is the penalty parameter of the error term
+        q = -np.ones(num_samples) # q is the vector of the quadratic objective function
+        # q[-1] = self.C # q is the penalty parameter of the error term
         print("q=\n",q)
         
         G = -np.diag(y) @ np.hstack((X, np.ones((num_samples, 1)))) # G is the matrix of the inequality constraints
         print("G=\n",G)
-        h = -np.ones(num_samples) # h is the vector of the inequality constraints
+        h = -np.zeros(num_samples) # h is the vector of the inequality constraints
         print("h=\n",h)
         # Solve the quadratic programming problem
         alpha = solve_qp(P = P, q = q, G = G, h = h) # alpha is the Lagrange multipliers
