@@ -10,15 +10,39 @@ def score(y_true, y_pred):
     return np.mean(score_board)*100
     # pass
 
-class Polynomial_SVM:
-    def __init__(self) -> None:
-        pass
+def poly_kernel(x1, x2, p=1):
+    print(((np.dot(x1, x2.T) + 1) ** p).shape)
+    return (np.dot(x1, x2.T) + 1) ** p
+class poly_SVM(Linear_SVM):
+    def __init__(self, C, p) -> None:
+        self.p = p
+        super().__init__(C)
     
     def fit(self, X, y):
-        pass
+        self.y_train = y
+        n_samples, n_features = X.shape
+        K = poly_kernel(X, X, self.p)
+        n_samples = K.shape[0]
+        P = np.outer(y, y) * K
+        q = -np.ones((n_samples, 1))
+        A = y.astype(np.double)
+        b = np.array([0.0])
+        lb = np.zeros(n_samples).astype(np.double)
+        ub = np.ones(n_samples)* self.C
+        problem = Problem(P, q, None, None, A, b, lb, ub)
+        solution = solve_problem(problem, solver='proxqp')
+        self.alpha = np.array([round(i, 4) for i in solution.x])
+        self.w = np.array([round(i, 4) for i in np.dot(X.T, self.alpha * y)])
+        tmp_x = np.array(X)[np.logical_and(0 < self.alpha, self.alpha < self.C), :]
+        tmp_y = np.array(y)[np.logical_and(0 < self.alpha, self.alpha < self.C)]
+        self.b = round(np.mean(tmp_y - np.dot(tmp_x, self.w)), 4)
+        print("alpha:\n", self.alpha, "\nand len: ", len(self.alpha), "sum: ", round(sum(self.alpha), 4))
+        print("weight: ",self.w)
+        print("bias: ",self.b)
 
     def predict(self, X):
-        pass
+        K = poly_kernel(X, X, self.p)
+        return np.sign(np.dot(K, self.alpha * self.y_train) + self.b)
 
 
 datas1 = []
@@ -42,6 +66,11 @@ x_test = np.vstack((np.array([i[2:] for i in datas2[25:]]), np.array([i[2:] for 
 x_train = np.vstack((np.array([i[2:] for i in datas2[:25]]), np.array([i[2:] for i in datas3[:25]])))
 y_train = np.hstack((np.array([1 for i in datas2[:25]]), np.array([-1 for i in datas3[:25]])))
 y_ans = np.hstack((np.array([1 for i in datas2[25:]]), np.array([-1 for i in datas3[25:]])))
+
+svm = poly_SVM(C=10, p=2)
+svm.fit(x_train, y_train)
+svm_ans = svm.predict(x_test)
+print("score: ", score(y_ans, svm_ans))
 
 # #=========================================Linear_SVM==========================================================
 # c_rate = np.array([])
