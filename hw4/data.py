@@ -13,17 +13,14 @@ class data:
         for i in self._feature:
             yield i
 
-    def size(self) -> int:
-        return len(self._feature)
-
     def __len__(self):
-        return self._label
+        return len(self._feature)
 
     def append(self, x):
         self._feature.append(float(x))
 
-    def __str__(self) -> str:
-        return f'{self._label}'
+    def __int__(self) -> int:
+        return self._label
 
     def set_label(self, y = 0):
         self._label = int(y)
