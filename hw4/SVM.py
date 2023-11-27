@@ -35,7 +35,7 @@ class Linear_SVM:
         # # self.b = round(np.mean(tmp_y - np.dot(tmp_x, self.w)), 4)
         # self.b = round(np.mean(tmp_y - np.dot(self.kernel(tmp_x, tmp_x), tmp_alpha * tmp_y)), 4)
         # print("alpha:\n", alpha, "\nand sum: ", round(sum(alpha), 4))
-        print("> bias: ",self.b)
+        # print("> bias: ",self.b)
 
     def predict(self, X):
         linear_model = np.array([])
