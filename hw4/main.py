@@ -80,7 +80,7 @@ plt.axis('tight')
 
 # Add row and column titles
 plt.xlabel('C')
-plt.ylabel('sigma')
+plt.ylabel('sigama')
 
-plt.colorbar(label='CV Value')
-plt.savefig('images/heatmap.png', dpi=300)
+plt.colorbar(label='Cross-Validation')
+plt.savefig('images/cv.png', dpi=300)
