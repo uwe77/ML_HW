@@ -32,7 +32,6 @@ for c in range(len(C)):
             y_ans = np.hstack(([1 for i in range(len(test_data_space[0]))], 
                                 [2 for i in range(len(test_data_space[1]))],
                                 [3 for i in range(len(test_data_space[2]))]))
-            # y_ans = np.array([int(i.get_data_class()) for i in test_data_space[:]])
             svm = [rbf(C=C[c], sigama=1.05**sigma[s]) for i in range(3)]
             for models in combination:
                 train_data = np.vstack((train_data_space[models[1]].get_feature_in_matrix(),
@@ -42,7 +41,6 @@ for c in range(len(C)):
                 svm[models[0]].fit(train_data, y_label)
             svm_ans = []
             for i in range(3):
-                # svm_ans = svm[combination[i][0]].predict(test_data)
                 tmp_ans = []
                 for sa in svm[combination[i][0]].predict(test_data):
                     if sa == 1:
