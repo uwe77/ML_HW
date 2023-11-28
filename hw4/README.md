@@ -4,12 +4,12 @@
 # Grid Search
 
 <figure>
-    <img src="./images/cv_winter.png" width="80%" alt="" align='center' />
+    <img src="./images/cv_winter.png" width="90%" alt="" align='center' />
     <figcaption align='center'>2-fold-CV</figcaption>
 </figure>
 
+---------------------------------------
 ## non-fold CV
-
 <p align='center'>
     <img src="./images/non_fold1.png" width="45%" />
     <img src="./images/non_fold2.png" width="45%" />
