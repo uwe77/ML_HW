@@ -1,45 +1,51 @@
 import numpy as np
+import math
 
 class LDA:
-    def __init__(self):
-        self.means_ = {}
-        self.priors_ = {}
-        self.cov_ = None
-        self.weights_ = None
-        self.intercept_ = None
+    def __init__(self, C1=1, C2=1):
+        self._c1 = C1
+        self._c2 = C2
 
     def fit(self, X, y):
-        # Separate the data into classes
-        class_labels = np.unique(y)
-
-        # Calculate means, priors, and covariance
-        for label in class_labels:
-            X_class = X[y == label]
-            self.means_[label] = np.mean(X_class, axis=0)
-            self.priors_[label] = X_class.shape[0] / X.shape[0]
-        
-        self.cov_ = np.cov(X.T, bias=True)  # pooled covariance matrix
-
-        # Calculate the weights and intercept
-        inv_cov = np.linalg.inv(self.cov_)
-        self.weights_ = np.dot(inv_cov, (self.means_[1] - self.means_[0]))
-        self.intercept_ = (
-            -0.5 * np.dot(np.dot(self.means_[1], inv_cov), self.means_[1])
-            + 0.5 * np.dot(np.dot(self.means_[0], inv_cov), self.means_[0])
-            + np.log(self.priors_[1] / self.priors_[0])
-        )
-
+        S = np.zeros((X.shape[1], X.shape[1]))
+        self._n_f = X.shape[1]
+        self._n_classes = len(np.unique(y))
+        self._class_type = []
+        SP = np.zeros((self._n_f, self._n_f))
+        SN = np.zeros((self._n_f, self._n_f))
+        m1 = None
+        m2 = None
+        for c in np.unique(y):
+            self._class_type.append(c)
+            x_c = np.array(X)[y == c]
+            mean_c = np.mean(x_c, axis=0)
+            for i in x_c:
+                diff = i-mean_c
+                m = np.zeros((2, len(diff)))
+                m[0] = diff
+                m = m.T.dot(m)
+                if c:
+                    SP += m
+                else:
+                    SN += m
+            if c:
+                SP /= x_c.shape[0]-1
+                S += (SP*x_c.shape[0])
+                m1 = mean_c
+            else:
+                SN /= x_c.shape[0]-1
+                S += SN*x_c.shape[0]
+                m2 = mean_c
+        S /= X.shape[0]
+        self._w = np.array([round(i,2) for i in(np.dot((m1-m2), np.linalg.inv(S)))])
+        self._b = round(-0.5*self._w.dot(m1+m2) - math.log(self._c1/self._c2), 2)
     def predict(self, X):
-        # Apply the linear discriminant function
-        scores = X.dot(self.weights_) + self.intercept_
-        return np.where(scores > 0, 1, 0)
+        y = []
+        for i in X:
+            pos = np.dot(i, self._w.T)+self._b
+            if pos > 0: # y=1
+                y.append(1)
+            elif pos <= 0: # y = 0
+                y.append(0)
+        return np.array(y)
 
-    def predict_proba(self, X):
-        # Calculate the probability estimates
-        scores = X.dot(self.weights_) + self.intercept_
-        return 1 / (1 + np.exp(-scores))
-
-# Example usage:
-# lda = LDA()
-# lda.fit(X_train, y_train)
-# y_pred = lda.predict(X_test)

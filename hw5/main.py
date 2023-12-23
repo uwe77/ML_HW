@@ -3,8 +3,8 @@ from data import data_space, data
 from lda import LDA
 from ucimlrepo import fetch_ucirepo, list_available_datasets
 from sfs import SFS
-# check which datasets can be imported
-# list_available_datasets()
+import matplotlib.pyplot as plt
+
 
 # import dataset
 breast_cancer = fetch_ucirepo(id=17)
@@ -19,28 +19,16 @@ for i in range(len(Y)):
     data_input = data(y_trans(i)) # create data object
     data_input[:] = X[i] # add features
     d_space.append_data(data_input) # add data object to data_space
-# print(d_space)
-    
 
-SFS(None, d_space, 2)
-# for times in range(2): # times = k-fold
-#     train_data_space = ds[times] # data_space
-#     test_data_space = ds[1-times] # data_space
-#     train_data = np.vstack((train_data_space[0].get_feature_in_matrix(),
-#                             train_data_space[1].get_feature_in_matrix())) # festure matrix
-#     y = np.hstack(([0 for i in range(len(train_data_space[0]))],
-#                     [1 for i in range(len(train_data_space[1]))])) # ans array
-#     test_data = np.vstack((test_data_space[0].get_feature_in_matrix(),
-#                             test_data_space[1].get_feature_in_matrix())) # festure matrix
-#     y_ans = np.hstack(([0 for i in range(len(test_data_space[0]))],
-#                         [1 for i in range(len(test_data_space[1]))])) # ans array
-#     lda.fit(train_data, y)
-#     lda_ans = lda.predict(test_data)
-#     score = 0
-#     for i in range(len(lda_ans)):
-#         if lda_ans[i] == y_ans[i]:
-#             score += 1
-#     score = round(score*100/len(lda_ans), 2)
-# print(score)
+sfs_fs, sfs_sc = SFS(LDA, d_space, 2) # 2-fold cross validation LDA SFS
+# print(f'SFS feature_selected:\n {sfs_fs}')
+# print(f'SFS score_list:\n {sfs_sc}')
 
-# lda.fit(d_space)
+
+plt.figure(figsize=(10,10))
+plt.plot(np.arange(len(sfs_sc)), sfs_sc)
+plt.xlabel('Cumulatively used features')
+plt.ylabel('2-fold CV')
+plt.xticks(np.arange(len(sfs_sc)), sfs_fs)
+plt.yticks(sfs_sc, sfs_sc)
+plt.savefig('images/sfs_cv.png', dpi=300)
