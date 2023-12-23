@@ -21,9 +21,6 @@ for i in range(len(Y)):
     d_space.append_data(data_input) # add data object to data_space
 
 sfs_fs, sfs_sc = SFS(LDA, d_space, 2) # 2-fold cross validation LDA SFS
-# print(f'SFS feature_selected:\n {sfs_fs}')
-# print(f'SFS score_list:\n {sfs_sc}')
-
 
 plt.figure(figsize=(10,10))
 plt.plot(np.arange(len(sfs_sc)), sfs_sc)
