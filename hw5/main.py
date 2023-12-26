@@ -3,11 +3,11 @@ from data import data_space, data
 from lda import LDA
 from ucimlrepo import fetch_ucirepo, list_available_datasets
 from sfs import SFS
-from fcfs import FCFS
+from fs import FS
 import matplotlib.pyplot as plt
 
 
-# import dataset
+# import datasetFS
 breast_cancer = fetch_ucirepo(id=17)
 # alternatively: fetch_ucirepo(name='Heart Disease')
 
@@ -37,9 +37,15 @@ for i in range(len(Y)):
 # plt.yticks(sfs_sc, sfs_sc)
 # plt.savefig('images/sfs_cv2.png', dpi=300)
 ############################################################################
-
+# x1 = np.array([i for i in range(3)])
+# x2 = np.array([[1, 1, 1],
+#                [2, 3, 4,],
+#                [-1, -1, -1]])
+# for i in range(len(x2)):
+#     x2[i] = x2[i] - x1[i]
+# print(x2)
 ##################################FC+LDA####################################
-FCFS(d_space, 2)
+FS(d_space)
 # fcfs_fs, fcfs_sc = FCFS(d_space, 2) # 2-fold cross validation LDA FC
 
 ############################################################################
