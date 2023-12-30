@@ -3,7 +3,8 @@ from data import data_space, data
 from lda import LDA
 from ucimlrepo import fetch_ucirepo, list_available_datasets
 from sfs import SFS
-from fs import FS
+from test import FS
+# from fs import FS
 import matplotlib.pyplot as plt
 
 

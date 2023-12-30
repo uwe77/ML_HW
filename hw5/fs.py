@@ -17,15 +17,22 @@ def FS(d_space: data_space):
         for i in range(x_m.shape[1]):
             x_m[:,i] = x_m[:,i] - mean_c[c, i]
         sw += np.dot(x_m.T, x_m) / x_m.shape[0]
-        c_a = np.zeros(len(mean_a))
-        for i in range(len(mean_a)):
-            c_a[i] = mean_c[c,i] - mean_a[i]
-        c_a = np.vstack((c_a, np.zeros(c_a.shape[0])))
-        sb += np.dot(c_a.T, c_a)
-    # sw = np.linalg.eig(sw)[0]
-    # sb = np.linalg.eig(sb)[0]
+        # c_a = np.zeros(len(mean_a))
+        # for i in range(len(mean_a)):
+        #     c_a[i] = mean_c[c,i] - mean_a[i]
+        c_a = mean_c[c] - mean_a
+        # c_a = np.vstack((c_a, np.zeros(c_a.shape[0])))
+        # sb += np.dot(c_a.T, c_a)
+        sb += np.dot(c_a.reshape(-1, 1), c_a.reshape(1, -1))
+    eigvals, eigvecs = np.linalg.eig(np.linalg.inv(sw).dot(sb))
+    eiglist = [(eigvals[i], eigvecs[:, i]) for i in range(len(eigvals))]
+    eiglist = sorted(eiglist, key=lambda x: x[0], reverse=True)
+
+    # w = eiglist[0][1]
+    sw = np.linalg.eig(sw)[0]
+    sb = np.linalg.eig(sb)[0]
     score = np.zeros(len(sw))
     for i in range(len(sw)):
-        score[i] = sb[i,i]/sw[i,i]
+        score[i] = sb[i]/sw[i]
         print(score[i])
     return score
