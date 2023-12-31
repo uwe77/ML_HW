@@ -3,8 +3,8 @@ from data import data_space, data
 from lda import LDA
 from ucimlrepo import fetch_ucirepo, list_available_datasets
 from sfs import SFS
-from test import FS
-# from fs import FS
+from fs import FS
+from test import fs as test_fs
 import matplotlib.pyplot as plt
 
 
@@ -46,7 +46,11 @@ for i in range(len(Y)):
 #     x2[i] = x2[i] - x1[i]
 # print(x2)
 ##################################FC+LDA####################################
-FS(d_space)
-# fcfs_fs, fcfs_sc = FCFS(d_space, 2) # 2-fold cross validation LDA FC
-
+# sorted_index, eigvals = FS(d_space)
+# print(sorted_index,"\n")
+# for i in sorted_index:
+#     print(eigvals[i])
+s_index, score = test_fs(d_space)
+for i in range(len(s_index)):
+    print(s_index[i], score[i])
 ############################################################################
