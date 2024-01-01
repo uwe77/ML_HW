@@ -13,8 +13,8 @@
 <p>
 
 <p align='center'>
-    <img src="./images/fs_k-fold:1.png" width="45%" />
-    <img src="./images/fs_k-fold:2.png" width="45%" />
+    <img src="./images/fs_k-fold:1.png" width="50%" />
+    <img src="./images/fs_k-fold:2.png" width="50%" />
 <p>
 
 ## Part3：Discussion and results presenting
