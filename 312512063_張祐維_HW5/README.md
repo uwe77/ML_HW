@@ -9,12 +9,12 @@
 
 ## Part2: Fisher’s Criterion
 <p align='center'>
-    <img src="./images/fs_all.png" width="50%" />
+    <img src="./images/fs_all.png" width="80%" />
 <p>
 
 <p align='center'>
-    <img src="./images/fs_k-fold:1.png" width="50%" />
-    <img src="./images/fs_k-fold:2.png" width="50%" />
+    <img src="./images/fs_k-fold:1.png" width="80%" />
+    <img src="./images/fs_k-fold:2.png" width="80%" />
 <p>
 
 ## Part3：Discussion and results presenting

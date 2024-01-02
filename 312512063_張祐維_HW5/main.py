@@ -96,8 +96,10 @@ for fs_times in range(len(fs_index_list)):
     plt.ylabel('Fisher\'s Score / 2-fold CV')
     plt.xticks(np.arange(len(fs_score_list[fs_times])), fs_index_list[fs_times])
     if fs_times == 0:
+        plt.title(f'fs with all data')
         plt.savefig(f'images/fs_all.png', dpi=300)
     else:
+        plt.title(f'fs with dataset{fs_times}')
         plt.savefig(f'images/fs_k-fold:{fs_times}.png', dpi=300)
     plt.close()
 
